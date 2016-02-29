@@ -1,3 +1,5 @@
+**This is a fork from Rocket-Launcher, its still in development, please be patient..**
+
 Rocket-Launcher
 ===============
 

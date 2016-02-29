@@ -1,6 +1,6 @@
 BUILD_DIR				:=		build
 
-BINARY_DIR				:=		binary/
+BINARY_DIR				:=		src/
 LIB_DIR					:=		lib/
 MISC_DIR				:=		misc
 
@@ -21,7 +21,7 @@ export RCKTL_FEATURE_APPINDICATOR
 	@#
 
 
-all: .BINARY .LIBRARY .MISC
+all: .LIBRARY .BINARY .MISC
 	@#
 
 clean:
