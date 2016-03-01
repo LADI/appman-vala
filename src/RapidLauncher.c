@@ -7,6 +7,10 @@
 
 static gint screen_width;
 static gint screen_height;
+static char query[50] = {0,};
+static int query_index = 0;
+static RocketLauncherApp** apps = NULL;
+static int apps_count = 0;
 
 void set_widget_color(GtkWidget *widget, float red, float green, float blue, float opacity) {
 	GdkRGBA bgcolor = {.0, .0, .1, 1.0}; //Default color
@@ -40,13 +44,13 @@ void resize_text(gchar* str, int limit) {
 }
 
 static gboolean on_icon_mouse_enter_callback (GtkWidget *widget, GdkEvent *event, gpointer data) {
-    set_widget_color((GtkWidget*)data, 0.1, 0.5, .8, 1.0); //sky-blue
+    set_widget_color((GtkWidget*)widget, 0.1, 0.5, .8, 1.0); //sky-blue
     return FALSE;
 }
 
 
 static gboolean on_icon_mouse_leave_callback (GtkWidget *widget, GdkEvent *event, gpointer data) {
-    set_widget_color((GtkWidget*)data, 0, 0, 0, 0); //set default color
+    set_widget_color((GtkWidget*)widget, 0, 0, 0, 0); //set default color
     return FALSE;
 }
 
@@ -63,45 +67,86 @@ static gboolean on_window_key_press_callback (GtkSearchEntry *searchentry, GdkEv
 	return FALSE;
 }
 
-static gboolean on_search_entry_key_press_callback (GtkSearchEntry *searchentry, GdkEvent *event, gpointer data)
+static gboolean on_icon_key_press_callback (GtkWidget *widget, GdkEvent *event, gpointer data)
 {
-	//TODO finish here
-	g_print("%c", ((GdkEventKey*)event)->keyval);
+	if (((GdkEventKey*)event)->keyval == GDK_KEY_Return) {
+		rocket_launcher_app_start((RocketLauncherApp*)data);
+		gtk_main_quit ();
+	}
 	return FALSE;
 }
 
+static gboolean on_search_entry_key_release_callback (GtkSearchEntry *searchentry, GdkEvent *event, gpointer data)
+{
+	int i, row, start, end;
+	int columns = screen_width/(SPACE+ICON_SIZE) - 2;
+	/* I'm not using TRIE or binary search because in general there is a small number of installed application,
+	 * so the efficiency is good enought also with this simple code.
+	 */
+	const gchar *query = gtk_entry_get_text((GtkEntry*)searchentry);
+	RocketLauncherApp *app;
+	for (i = 0; i < apps_count; i++) {
+		row = i / columns;
+		GtkWidget *child = gtk_grid_get_child_at((GtkGrid*)data, i - (row * columns), row);
+		gchar *name = rocket_launcher_app_get_name (apps[i]);
+		if (!(g_str_has_prefix ( g_utf8_strdown ( name, strlen(name) ), g_utf8_strdown (query, strlen(query))))) {
+			gtk_widget_hide (child);
+		} else {
+			gtk_widget_show (child);
+			if (strlen(name) == strlen(query))
+				gtk_widget_grab_focus (child);
+		}
+	}
+	return FALSE;
+}
+
+void add_application(GtkGrid *grid, RocketLauncherApp *app, int i, int j) {
+	GtkWidget *event_box = event_box = gtk_event_box_new ();
+	GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *image = gtk_image_new_from_file (rocket_launcher_app_get_icon_path (app));
+	resize_image(image, ICON_SIZE, ICON_SIZE);
+	gtk_box_pack_start (GTK_BOX (box), image, FALSE, FALSE, 0);
+	gchar *str = rocket_launcher_app_get_name (app);
+	resize_text(str, 15);
+	GtkWidget *label = gtk_label_new (NULL);
+	gtk_label_set_markup (GTK_LABEL (label), g_strconcat("<span color='#FFFFFF'>",str,"</span>", NULL));
+	g_free(str);
+	gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (event_box), box);
+	gtk_widget_set_can_focus (event_box, TRUE);
+	gtk_grid_attach(GTK_GRID(grid), event_box, j, i, 1, 1);
+	g_signal_connect (G_OBJECT (event_box), "button-press-event", G_CALLBACK (on_icon_button_press_callback), (gpointer) app);
+	g_signal_connect (G_OBJECT (event_box), "enter-notify-event", G_CALLBACK (on_icon_mouse_enter_callback), NULL);
+	g_signal_connect (G_OBJECT (event_box), "leave-notify-event", G_CALLBACK (on_icon_mouse_leave_callback), NULL);
+	g_signal_connect (G_OBJECT (event_box), "key-press-event", G_CALLBACK (on_icon_key_press_callback), (gpointer) app);
+	g_signal_connect (G_OBJECT (event_box), "focus-in-event", G_CALLBACK (on_icon_mouse_enter_callback), NULL); //Same as mouse events
+	g_signal_connect (G_OBJECT (event_box), "focus-out-event", G_CALLBACK (on_icon_mouse_leave_callback), NULL);
+}
+
 void add_applications(GtkGrid *grid) {
-	int result = 0;
 	int columns = screen_width/(SPACE+ICON_SIZE) - 2;
 	RocketLauncherApplicationHandler *apphandl = rocket_launcher_application_handler_new ();
-	RocketLauncherApp** apps = rocket_launcher_application_handler_get_apps (apphandl, &result);
-	g_print ("Retrieved %d applications\n", result);
+	apps = rocket_launcher_application_handler_get_apps (apphandl, &apps_count);
+	g_print ("Retrieved %d applications\n", apps_count);
 	g_print ("Columns: %d\n", columns);
 	int j = 0;
-	int t = result/columns;
+	int t = apps_count/columns;
 	int i = 0;
 	int x = 0;
 	for (j = 0; j < columns; j++) gtk_grid_insert_column (grid, j);
 	for (i=0; i < t; i++) {
 		gtk_grid_insert_row (grid, i);
 		for (j = 0; j < columns; j++) {
-			GtkWidget *event_box = event_box = gtk_event_box_new ();
-			GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-			GtkWidget *image = gtk_image_new_from_file (rocket_launcher_app_get_icon_path (apps[x]));
-			resize_image(image, ICON_SIZE, ICON_SIZE);
-			gtk_box_pack_start (GTK_BOX (box), image, FALSE, FALSE, 0);
-			gchar *str = rocket_launcher_app_get_name (apps[x]);
-			resize_text(str, 15);
-			GtkWidget *label = gtk_label_new (NULL);
-			gtk_label_set_markup (GTK_LABEL (label), g_strconcat("<span color='#FFFFFF'>",str,"</span>", NULL));
-			g_free(str);
-			gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
-			gtk_container_add (GTK_CONTAINER (event_box), box);
-			gtk_grid_attach(GTK_GRID(grid), event_box, j, i, 1, 1);
-			g_signal_connect (G_OBJECT (event_box), "button-press-event", G_CALLBACK (on_icon_button_press_callback), (gpointer) apps[x]);
-			g_signal_connect (G_OBJECT (event_box), "enter-notify-event", G_CALLBACK (on_icon_mouse_enter_callback), (gpointer) image);
-			g_signal_connect (G_OBJECT (event_box), "leave-notify-event", G_CALLBACK (on_icon_mouse_leave_callback), (gpointer) image);
+			add_application(grid, apps[x], i, j);
 			x++;
+		}
+	}
+	//reminder of division
+	j = apps_count % columns;
+	if (x > 0) {
+		gtk_grid_insert_row (grid, i);
+		for (x = 0; x < j; x++) {
+			add_application(grid, apps[x+columns], i, x);
 		}
 	}
 }
@@ -139,12 +184,10 @@ int main (int argc, char **argv) {
 	gtk_box_pack_start (GTK_BOX (box), scrolled_window, FALSE, FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (window), box);
 	
-	gtk_widget_set_events(window, GDK_POINTER_MOTION_MASK);
-	gtk_widget_set_events(window, GDK_BUTTON_PRESS_MASK);
-	gtk_widget_set_events(scrolled_window, GDK_BUTTON_PRESS_MASK);
+	gtk_widget_set_events(window, GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_FOCUS_CHANGE_MASK);
 
 	g_signal_connect (G_OBJECT (window), "key-press-event", G_CALLBACK (on_window_key_press_callback), NULL);
-	g_signal_connect (G_OBJECT (search_entry), "key-press-event", G_CALLBACK (on_search_entry_key_press_callback), NULL);
+	g_signal_connect (G_OBJECT (search_entry), "key-release-event", G_CALLBACK (on_search_entry_key_release_callback), grid);
 
 	gtk_widget_show_all (window);
 	

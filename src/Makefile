@@ -1,4 +1,4 @@
 all:
-	gcc `pkg-config --cflags gtk+-3.0` SimpleLauncher.c `pkg-config --libs gtk+-3.0` -L../build/ -lrocketlauncher `pkg-config --cflags --libs glib-2.0` -o ../build/simplelauncher
+	gcc `pkg-config --cflags gtk+-3.0` RapidLauncher.c `pkg-config --libs gtk+-3.0` -L../build/ -lrocketlauncher `pkg-config --cflags --libs glib-2.0` -o ../build/rapidlauncher
 
 clean:
