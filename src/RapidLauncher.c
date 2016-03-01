@@ -3,6 +3,8 @@
 
 #define SPACE 40
 #define ICON_SIZE 80
+#define BUTTON_WIDTH 100
+#define BUTTON_HEIGHT 30
 
 
 static gint screen_width;
@@ -132,8 +134,6 @@ void add_applications(GtkGrid *grid) {
 	int columns = screen_width/(SPACE+ICON_SIZE) - 2;
 	RocketLauncherApplicationHandler *apphandl = rocket_launcher_application_handler_new ();
 	apps = rocket_launcher_application_handler_get_apps (apphandl, &apps_count);
-	g_print ("Retrieved %d applications\n", apps_count);
-	g_print ("Columns: %d\n", columns);
 	int j = 0;
 	int t = apps_count/columns;
 	int i = 0;
@@ -154,6 +154,37 @@ void add_applications(GtkGrid *grid) {
 	}
 }
 
+
+/** Maybe they aren't so useful
+void add_filter_buttons (GtkWidget *box, GtkWidget *grid) {
+	GtkWidget *btn_utility = gtk_button_new_with_label ("Utility");
+	gtk_widget_set_size_request (btn_utility, BUTTON_WIDTH, BUTTON_HEIGHT);
+	g_signal_connect (G_OBJECT (btn_utility), "clicked", G_CALLBACK (on_button_clicked_callback), (gpointer) grid);
+	GtkWidget *btn_audiovideo = gtk_button_new_with_label ("AudioVideo");
+	gtk_widget_set_size_request (btn_audiovideo, BUTTON_WIDTH, BUTTON_HEIGHT);
+	set_widget_color(btn_audiovideo, .5, .5, .5, 1.0);
+	GtkWidget *btn_game = gtk_button_new_with_label ("Game");
+	gtk_widget_set_size_request (btn_game, BUTTON_WIDTH, BUTTON_HEIGHT);
+	set_widget_color(btn_game, .1, .1, .1, 1.0);
+	GtkWidget *btn_network = gtk_button_new_with_label ("Network");
+	gtk_widget_set_size_request (btn_network, BUTTON_WIDTH, BUTTON_HEIGHT);
+	GtkWidget *btn_office = gtk_button_new_with_label ("Office");
+	gtk_widget_set_size_request (btn_office, BUTTON_WIDTH, BUTTON_HEIGHT);
+	GtkWidget *btn_development = gtk_button_new_with_label ("Development");
+	gtk_widget_set_size_request (btn_development, BUTTON_WIDTH, BUTTON_HEIGHT);
+	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 20);
+	gtk_widget_set_halign(hbox, GTK_ALIGN_CENTER);
+	gtk_box_pack_start (GTK_BOX (hbox), btn_utility, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), btn_audiovideo, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), btn_game, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), btn_network, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), btn_office, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), btn_development, FALSE, FALSE, 0);
+	gtk_widget_set_margin_top(hbox, 20);
+	gtk_box_pack_start (GTK_BOX (box), hbox, FALSE, FALSE, 0);
+}
+*/
+
 int main (int argc, char **argv) {
 	GtkWidget *window;
 	
@@ -169,10 +200,9 @@ int main (int argc, char **argv) {
 	GtkWidget *scrolled_window = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_min_content_height ((GtkScrolledWindow*)scrolled_window, screen_height-80 );
 	GtkWidget *search_entry = gtk_search_entry_new ();
+	gtk_widget_set_margin_top(search_entry, 20);
 	gtk_widget_set_margin_start(search_entry, screen_width-800);
 	gtk_widget_set_margin_end(search_entry, screen_width-800);
-	gtk_widget_set_margin_top(search_entry, 20);
-	gtk_box_pack_start (GTK_BOX (box), search_entry, FALSE, FALSE, 0);
 	GtkWidget *grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing((GtkGrid*)grid, SPACE);
 	gtk_grid_set_column_spacing((GtkGrid*)grid, SPACE);
@@ -181,7 +211,10 @@ int main (int argc, char **argv) {
 	gtk_window_set_decorated(GTK_WINDOW(window), FALSE);
 	gtk_window_fullscreen (GTK_WINDOW(window));
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
+	gtk_window_set_title(GTK_WINDOW(window), "RapidLauncher");
 	
+	//add_filter_buttons (box, grid); DISABLED
+	gtk_box_pack_start (GTK_BOX (box), search_entry, FALSE, FALSE, 0);
 	gtk_container_add (GTK_CONTAINER(scrolled_window), grid);
 	gtk_widget_set_halign(grid, GTK_ALIGN_CENTER);
 	gtk_box_pack_start (GTK_BOX (box), scrolled_window, FALSE, FALSE, 0);
@@ -192,6 +225,7 @@ int main (int argc, char **argv) {
 	g_signal_connect (G_OBJECT (window), "key-press-event", G_CALLBACK (on_window_key_press_callback), NULL);
 	g_signal_connect (G_OBJECT (search_entry), "key-release-event", G_CALLBACK (on_search_entry_key_release_callback), grid);
 
+	gtk_widget_grab_focus (search_entry);
 	gtk_widget_show_all (window);
 	
 	gtk_main ();
