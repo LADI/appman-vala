@@ -143,11 +143,9 @@ void add_applications(GtkGrid *grid) {
 	}
 	//reminder of division
 	j = apps_count % columns;
-	if (x > 0) {
-		gtk_grid_insert_row (grid, i);
-		for (x = 0; x < j; x++) {
-			add_application(grid, apps[x+columns], i, x);
-		}
+	gtk_grid_insert_row (grid, i);
+	for (x = 0; x < j; x++) {
+		add_application(grid, apps[x+i*columns], i, x);
 	}
 }
 
