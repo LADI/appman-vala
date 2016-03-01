@@ -172,7 +172,7 @@ namespace RocketLauncher {
                     App app = t.join();
                     
                     if (app != null) {
-                        apps.append(app);
+                        apps.insert_sorted(app, (a1, a2) => strcmp(a1.get_name().down(), a2.get_name().down() ));
                     }
                 }
             } else {
@@ -187,15 +187,10 @@ namespace RocketLauncher {
                     App app = worker.thread_func();
                     
                     if (app != null) {
-                        apps.append(app);
+                        apps.insert_sorted(app, (a1, a2) => strcmp(a1.get_name().down(), a2.get_name().down() ));
                     }
                 }
             }
-            
-            //Sort our list of apps
-            apps.sort((a,b) => {
-                return GLib.strcmp(a.get_name(), b.get_name());
-            });
             
             // Convert to array
             App[] apps_ar = new App[apps.length()];
