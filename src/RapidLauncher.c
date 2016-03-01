@@ -7,8 +7,6 @@
 
 static gint screen_width;
 static gint screen_height;
-static char query[50] = {0,};
-static int query_index = 0;
 static RocketLauncherApp** apps = NULL;
 static int apps_count = 0;
 
@@ -20,7 +18,14 @@ void set_widget_color(GtkWidget *widget, float red, float green, float blue, flo
 		bgcolor.blue = blue;
 		bgcolor.alpha = opacity;
 	}
-	gtk_widget_override_background_color(widget, GTK_STATE_NORMAL, &bgcolor); //FIXME deprecated since GTK 3.16
+	gchar *css;
+	GtkCssProvider *provider;
+	provider = gtk_css_provider_new ();
+	css = g_strdup_printf ("* { background-color: %s; }", gdk_rgba_to_string (&bgcolor));
+	gtk_css_provider_load_from_data (provider, css, -1, NULL);
+	g_free (css);
+	gtk_style_context_add_provider (gtk_widget_get_style_context (widget), GTK_STYLE_PROVIDER (provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	g_object_unref (provider);
 }
 
 gboolean resize_image(GtkWidget *widget, int width, int height) {
@@ -78,7 +83,7 @@ static gboolean on_icon_key_press_callback (GtkWidget *widget, GdkEvent *event, 
 
 static gboolean on_search_entry_key_release_callback (GtkSearchEntry *searchentry, GdkEvent *event, gpointer data)
 {
-	int i, row, start, end;
+	int i, row;
 	int columns = screen_width/(SPACE+ICON_SIZE) - 2;
 	/* I'm not using TRIE or binary search because in general there is a small number of installed application,
 	 * so the efficiency is good enought also with this simple code.
