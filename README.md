@@ -1,5 +1,3 @@
-**Forked from Rocket-Launcher**
-
 Rapid Launcher
 ===============
 
@@ -16,7 +14,8 @@ Rapid Launcher is born to give a good launcher also for old PCs. It's really sim
 
 
 ### Version
-This is an **alpha** release.
+
+0.1
 
 ### License
 
