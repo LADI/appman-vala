@@ -167,10 +167,8 @@ void add_filter_buttons (GtkWidget *box, GtkWidget *grid) {
 	g_signal_connect (G_OBJECT (btn_utility), "clicked", G_CALLBACK (on_button_clicked_callback), (gpointer) grid);
 	GtkWidget *btn_audiovideo = gtk_button_new_with_label ("AudioVideo");
 	gtk_widget_set_size_request (btn_audiovideo, BUTTON_WIDTH, BUTTON_HEIGHT);
-	set_widget_color(btn_audiovideo, .5, .5, .5, 1.0);
 	GtkWidget *btn_game = gtk_button_new_with_label ("Game");
 	gtk_widget_set_size_request (btn_game, BUTTON_WIDTH, BUTTON_HEIGHT);
-	set_widget_color(btn_game, .1, .1, .1, 1.0);
 	GtkWidget *btn_network = gtk_button_new_with_label ("Network");
 	gtk_widget_set_size_request (btn_network, BUTTON_WIDTH, BUTTON_HEIGHT);
 	GtkWidget *btn_office = gtk_button_new_with_label ("Office");
