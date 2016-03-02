@@ -37,8 +37,9 @@ gboolean resize_image(GtkWidget *widget, int width, int height) {
 		g_printerr("Failed to resize image\n");
 		return FALSE;
 	}
-	pixbuf = gdk_pixbuf_scale_simple(pixbuf, width, height, GDK_INTERP_BILINEAR);
-	gtk_image_set_from_pixbuf(GTK_IMAGE(widget), pixbuf);
+	GdkPixbuf *scaled_pixbuf = gdk_pixbuf_scale_simple(pixbuf, width, height, GDK_INTERP_BILINEAR);
+	gtk_image_set_from_pixbuf(GTK_IMAGE(widget), scaled_pixbuf);
+	
 	return TRUE;
 }
 
@@ -49,6 +50,8 @@ void resize_text(gchar* str, int limit) {
 		str[limit] = '\0';
 	}
 }
+
+/* Signal Handlers */
 
 static gboolean on_icon_mouse_enter_callback (GtkWidget *widget, GdkEvent *event, gpointer data) {
     set_widget_color((GtkWidget*)widget, 0.1, 0.5, .8, 1.0); //sky-blue
@@ -108,7 +111,7 @@ static gboolean on_search_entry_key_release_callback (GtkSearchEntry *searchentr
 }
 
 void add_application(GtkGrid *grid, RocketLauncherApp *app, int i, int j) {
-	GtkWidget *event_box = event_box = gtk_event_box_new ();
+	GtkWidget *event_box = gtk_event_box_new ();
 	GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	GtkWidget *image = gtk_image_new_from_file (rocket_launcher_app_get_icon_path (app));
 	resize_image(image, ICON_SIZE, ICON_SIZE);
@@ -152,6 +155,8 @@ void add_applications(GtkGrid *grid) {
 	for (x = 0; x < j; x++) {
 		add_application(grid, apps[x+i*columns], i, x);
 	}
+	
+	g_object_unref (apphandl);
 }
 
 
@@ -191,7 +196,6 @@ int main (int argc, char **argv) {
 	gtk_init(&argc, &argv);
 	
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	GdkRGBA bgcolor = {.0, .0, .0, 1.0};
 	/* Get the size of the screen */
 	GdkScreen *screen = gdk_screen_get_default ();
 	screen_width = gdk_screen_get_width (screen);
