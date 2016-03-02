@@ -866,11 +866,12 @@ namespace RocketLauncher {
                 return name;
             }
 
-            // We also search in '/usr/share/pixmaps'
-            string icon_file_path = "/usr/share/pixmaps/"+name;
-            icon_file = GLib.File.new_for_path(icon_file_path);
-            if (icon_file.query_exists()) {
-                return icon_file_path;
+            // We also search in '/usr/share/pixmaps' (Note: theme indipendent)
+            string [,] key_value_matrix = {{"Size"}, {"48"}}; //Doesn't matter the value of the size
+            IconDirectory icon_directory = new IconDirectory(key_value_matrix, "/usr/share/pixmaps");
+            string? icon_path = icon_directory.get_icon(name); 
+            if (icon_path != null) {
+                return icon_path;
             }
 
             // If icon is not null but we still cant find it

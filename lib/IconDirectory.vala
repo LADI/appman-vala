@@ -118,6 +118,7 @@ namespace RocketLauncher {
                     string child_name_d = child_name.down();
                     
                     if (child_name_d.has_suffix(".png") ||
+	                    child_name_d.has_suffix(".jpg") ||
                         child_name_d.has_suffix(".svg") ||
                         child_name_d.has_suffix(".xpm")) {
                         
