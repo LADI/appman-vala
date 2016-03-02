@@ -6,7 +6,6 @@
 #define BUTTON_WIDTH 100
 #define BUTTON_HEIGHT 30
 
-
 static gint screen_width;
 static gint screen_height;
 static RocketLauncherApp** apps = NULL;

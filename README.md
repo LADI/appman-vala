@@ -1,30 +1,23 @@
-**This is a fork from Rocket-Launcher, it's still in development, please be patient..**
+**Forked from Rocket-Launcher**
 
-Rocket-Launcher
+Rapid Launcher
 ===============
 
-Rocket-Launcher is an application launcher that is supposed to be fast and
+Rapid Launcher is an application launcher that is supposed to be fast and
 relatively lightweight.
 
-It is written in Vala and uses GTK+ 3 as well as some own drawing with Cairo
-for its gui.
+The backend is written in Vala (library from Rocket-Launcher) and the frontend is written with C/GTK+ 3.
 
-Rocket-Launcher aims to be the only application launcher you need, while
-focusing on the core component: Starting Applications.
-
-I generally try to follow
-[The Arch Way](https://wiki.archlinux.org/index.php/The_Arch_Way).  
-("simplicity as without unnecessary additions, modifications, or
-complications")
-
-This is why Rocket-Launcher does not have support for Searching Documents,
-SSH, *Zeitgeist*, Controlling Music, etc.
-
-On the other side Rocket-Launcher can be built with minimal dependencies, so
-it works great on minimalistic systems which don't have (or don't want)
-*Zeitgeist*, *libunique*, *libgranite*, *libgtkhotkey*, the *appindicator*
-library or even *automake*.
+Rapid Launcher is born to give a good launcher also for old PCs. It's really simple and is inspired by the Android and OSX launchers.
 
 
 
 ![Screenshot](screenshot.jpg "Screenshot")
+
+
+### Version
+This is an **alpha** release.
+
+### License
+
+GPLv3

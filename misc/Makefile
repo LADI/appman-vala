@@ -1,7 +1,7 @@
 PORTABLE_SCRIPT			:=		run.sh
-RUN_SCRIPT				:=		rocket-launcher
-DESKTOP_FILE			:=		rocket-launcher.desktop
-ICON_NAME				:=		rocket-launcher
+RUN_SCRIPT				:=		rapidlauncher
+DESKTOP_FILE			:=		rapidlauncher.desktop
+ICON_NAME				:=		rapidlauncher
 
 
 ifndef RCKTL_DIR
@@ -41,6 +41,7 @@ install:
 	install -D "$(ICON_NAME)_32x32.png" "$(DESTDIR)$(RCKTL_INSTALL_ICON_DIR)/32x32/apps/$(ICON_NAME).png"
 	install -D "$(ICON_NAME)_36x36.png" "$(DESTDIR)$(RCKTL_INSTALL_ICON_DIR)/36x36/apps/$(ICON_NAME).png"
 	install -D "$(ICON_NAME)_48x48.png" "$(DESTDIR)$(RCKTL_INSTALL_ICON_DIR)/48x48/apps/$(ICON_NAME).png"
+	install -D "$(ICON_NAME)_48x48.png" "/usr/share/pixmaps/$(ICON_NAME).png"
 	install -D "$(ICON_NAME)_64x64.png" "$(DESTDIR)$(RCKTL_INSTALL_ICON_DIR)/64x64/apps/$(ICON_NAME).png"
 	install -D "$(ICON_NAME)_72x72.png" "$(DESTDIR)$(RCKTL_INSTALL_ICON_DIR)/72x72/apps/$(ICON_NAME).png"
 	install -D "$(ICON_NAME)_96x96.png" "$(DESTDIR)$(RCKTL_INSTALL_ICON_DIR)/96x96/apps/$(ICON_NAME).png"
@@ -62,6 +63,7 @@ uninstall:
 	rm -f "$(DESTDIR)$(RCKTL_INSTALL_ICON_DIR)/32x32/apps/$(ICON_NAME).png"
 	rm -f "$(DESTDIR)$(RCKTL_INSTALL_ICON_DIR)/36x36/apps/$(ICON_NAME).png"
 	rm -f "$(DESTDIR)$(RCKTL_INSTALL_ICON_DIR)/48x48/apps/$(ICON_NAME).png"
+	rm -f "$(ICON_NAME)_48x48.png" "/usr/share/pixmaps/$(ICON_NAME).png"
 	rm -f "$(DESTDIR)$(RCKTL_INSTALL_ICON_DIR)/64x64/apps/$(ICON_NAME).png"
 	rm -f "$(DESTDIR)$(RCKTL_INSTALL_ICON_DIR)/72x72/apps/$(ICON_NAME).png"
 	rm -f "$(DESTDIR)$(RCKTL_INSTALL_ICON_DIR)/96x96/apps/$(ICON_NAME).png"

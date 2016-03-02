@@ -5,7 +5,7 @@ LIB_DIR					:=		lib/
 MISC_DIR				:=		misc
 
 
-export RCKTL_INSTALL_LIB_DIR=/usr/lib/rocket-launcher
+export RCKTL_INSTALL_LIB_DIR=/usr/lib/rapidlauncher
 export RCKTL_INSTALL_BIN_DIR=/usr/bin
 export RCKTL_INSTALL_ICON_DIR=/usr/share/icons/hicolor
 export RCKTL_INSTALL_DESKTOPFILE_DIR=/usr/share/applications
