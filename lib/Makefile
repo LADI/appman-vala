@@ -7,6 +7,7 @@ PACKAGES				:=		gobject-2.0
 PACKAGES				+=		glib-2.0
 PACKAGES				+=		gio-2.0
 PACKAGES				+=		x11
+PACKAGES				+=		gtk+-3.0
 
 GEN_FLAGS				:=		$(addprefix --pkg ,$(PACKAGES))
 GEN_FLAGS				+=		--target-glib=2.32
