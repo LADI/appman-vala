@@ -841,8 +841,21 @@ namespace RocketLauncher {
             return line;
         }
         
-        public string get_icon(string name, bool ignore_svg = false) {
+        public string get_icon(string original_name, bool ignore_svg = false) {
+        	string name;
             string? icon_str = null;
+            
+            // We first test if the given icon is an actual absolute path
+            GLib.File icon_file = GLib.File.new_for_path(original_name);
+            if (icon_file.query_exists()) {
+                return original_name;
+            }
+
+			//Some application have icon_name.png so we need to remove the extension
+			if (original_name.@get(original_name.length-4) == '.') {
+            	name = original_name.substring(0,original_name.length-4);    
+            } else
+            	name = original_name;
 
             // We first try to get the icon from the current theme
             icon_str = get_current_theme().get_icon(name, ignore_svg);
@@ -856,23 +869,16 @@ namespace RocketLauncher {
                 return icon_str;
             }
 
-            // If neither the current theme (or themes it inherits from)
-            // nor the fallback theme contains the icon we need we try
-            // to guess the correct icon.
-
-            // We first test if the given icon is an actual absolute path
-            GLib.File icon_file = GLib.File.new_for_path(name);
-            if (icon_file.query_exists()) {
-                return name;
-            }
-
             // We also search in '/usr/share/pixmaps' (Note: theme indipendent)
             string [,] key_value_matrix = {{"Size"}, {"48"}}; //Doesn't matter the value of the size
             IconDirectory icon_directory = new IconDirectory(key_value_matrix, "/usr/share/pixmaps");
-            string? icon_path = icon_directory.get_icon(name); 
+            string? icon_path = icon_directory.get_icon(name);
+            stdout.printf("Ricerco %s ... ", name);
             if (icon_path != null) {
+            	stdout.printf("trovato %s\n", icon_path);
                 return icon_path;
             }
+                        	stdout.printf("Null\n");
 
             // If icon is not null but we still cant find it
             // we use an fallback icon

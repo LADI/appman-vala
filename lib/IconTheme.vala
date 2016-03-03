@@ -51,7 +51,7 @@ namespace RocketLauncher {
          * These sub directories are given as groups in the
          * 'index.theme' file.
         **/
-        private IconDirectory[] icon_directories;
+        private List<IconDirectory> icon_directories_l = new List<IconDirectory>();
         
         public IconTheme(string? name) {
             valid = true;
@@ -203,10 +203,6 @@ namespace RocketLauncher {
             // to get the path for sub directories.
             GLib.File parent_dir = GLib.File.new_for_path(this.path);
             
-            // We create a list of sub directories,
-            // that we later convert to an array
-            List<IconDirectory> icon_directories_l = new List<IconDirectory>();
-            
             // We look at every 'directory' group,
             // take all its keys and the corresponding key values
             // and add them to a mx2 matrix.
@@ -291,12 +287,7 @@ namespace RocketLauncher {
                 }
             };
             icon_directories_l.sort(sortFunc);
-            
-            // Convert list to array
-            icon_directories = new IconDirectory[icon_directories_l.length()];
-            for (int i = 0; i < icon_directories_l.length(); i++) {
-                icon_directories[i] = icon_directories_l.nth_data(i);
-            }
+
         }
         
         private string? find_path() {
@@ -351,7 +342,7 @@ namespace RocketLauncher {
         public string? get_icon(string name, bool ignore_svg = false) {
             // Look in all directories of this current theme for the specified
             // icon.
-            foreach(IconDirectory icon_directory in icon_directories) {
+            foreach(IconDirectory icon_directory in icon_directories_l) {
                 // We ignore directories containing svg if we don't
                 // support them.
                 if (ignore_svg && icon_directory.is_scalable()) {
