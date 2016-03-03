@@ -12,6 +12,9 @@ Rapid Launcher is born to give a good launcher also for old PCs. It's really sim
 
 ![Screenshot](screenshot.jpg "Screenshot")
 
+### Dependencies
+
+Install gtk+ 3 devel to compile this software. For Fedora/RHEL/CentOS is `gtk3-devel` and for Ubuntu/Debian is `libgtk-3-dev`.
 
 ### Version
 
