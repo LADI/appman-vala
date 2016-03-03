@@ -263,7 +263,6 @@ namespace RocketLauncher {
                 IconDirectory ic_dir = new IconDirectory(
                                         key_value_matrix,
                                         child_dir);
-                
                 if (ic_dir.is_valid()) {
                     icon_directories_l.append(ic_dir);
                 }
@@ -345,9 +344,11 @@ namespace RocketLauncher {
             foreach(IconDirectory icon_directory in icon_directories_l) {
                 // We ignore directories containing svg if we don't
                 // support them.
+                /* Condition disabled, some icons won't load with this.
                 if (ignore_svg && icon_directory.is_scalable()) {
                     continue;
                 }
+                */
                 
                 string? icon_path = icon_directory.get_icon(name);
                 

@@ -23,7 +23,7 @@ namespace RocketLauncher {
         private int threshold;
         
         private string directory;
-        private GLib.Tree<string, string> icons;
+        private GLib.HashTable<string, string> icons;
         
         private bool valid;
         
@@ -31,9 +31,7 @@ namespace RocketLauncher {
             //
             valid = true;
             directory = directory_abs;
-            icons = new GLib.Tree<string, string>((a,b) => {
-                return strcmp(a, b);
-            });
+            icons = new GLib.HashTable<string, string>(s => s.hash(), (a,b) => a == b);
             
             // Set some defaults, which we will override with values
             // from matrix.
@@ -116,14 +114,13 @@ namespace RocketLauncher {
                 while ((child_info = child_enum.next_file()) != null) {
                     string child_name = child_info.get_name();
                     string child_name_d = child_name.down();
-                    
+
                     if (child_name_d.has_suffix(".png") ||
 	                    child_name_d.has_suffix(".jpg") ||
                         child_name_d.has_suffix(".svg") ||
                         child_name_d.has_suffix(".xpm")) {
                         
-                        string child_name_key = child_name.slice(0, child_name.length-4);
-                        
+                        string child_name_key = child_name.substring(0, child_name.length-4);
                         this.icons.insert(child_name_key, directory+"/"+child_name);
                     }
                 }

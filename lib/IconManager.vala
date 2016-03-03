@@ -873,12 +873,9 @@ namespace RocketLauncher {
             string [,] key_value_matrix = {{"Size"}, {"48"}}; //Doesn't matter the value of the size
             IconDirectory icon_directory = new IconDirectory(key_value_matrix, "/usr/share/pixmaps");
             string? icon_path = icon_directory.get_icon(name);
-            stdout.printf("Ricerco %s ... ", name);
             if (icon_path != null) {
-            	stdout.printf("trovato %s\n", icon_path);
                 return icon_path;
             }
-                        	stdout.printf("Null\n");
 
             // If icon is not null but we still cant find it
             // we use an fallback icon
