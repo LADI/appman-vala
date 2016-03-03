@@ -25,7 +25,6 @@ namespace RocketLauncher {
         
         private App[] apps;
         private int[] apps_selected;
-        private IconManager icon_manager = new IconManager();
         
         public ApplicationHandler() {
             // Setup the environment
@@ -35,7 +34,7 @@ namespace RocketLauncher {
             apps = scan_applications();
             
             // Set filter to all
-            filter_all();
+            //filter_all();
         }
         
         private void setup_environment() {
@@ -101,6 +100,7 @@ namespace RocketLauncher {
         }
         
         private App[] scan_applications() {
+	        IconManager icon_manager = new IconManager();
             // Go through all directories containing .desktop files
             // and create a list of (absolute) paths to .desktop files.
             GLib.List<string> desktop_file_list = new GLib.List<string>();
@@ -141,54 +141,15 @@ namespace RocketLauncher {
             
             // We create an Object from every .desktop file in our list
             // and put this object in a list (which we return).
-            //
-            // If we support threading we do this threaded,
-            // if not we just do it in one thread.
-            List<App> apps = new List<App>();
             
-            if (Thread.supported()) {
-                // Create a list of all running threads
-                GLib.List<Thread> thread_list = new GLib.List<Thread>();
-                
-                // Create and start all threads
-                foreach (string desktop_file in desktop_file_list) {
-                    try {
-                        AppCreationWorker worker = new AppCreationWorker(desktop_file, icon_manager);
-                        Thread t = new GLib.Thread<App?>.try("AppCreationWorker", worker.thread_func);
-                        thread_list.append(t);
-                    } catch (Error e) {
-                        string error_str = "";
-                        error_str += "Error occured while creating a worker for a .desktop file in multi threaded mode\n";
-                        error_str += "File: " +desktop_file +"\n";
-                        error_str += "Application seemed to have support for multithreading\n";
-                        error_str += "Error: \"" +e.message +"\"\n";
-                        error_str += "Ignoring this .desktop_file file ...\n";
-                        print_error(error_str);
-                    }
-                }
-                
-                // Wait for all threads to finish
-                foreach (Thread<App> t in thread_list) {
-                    App app = t.join();
+            //TODO: Multi-thread
+            
+            List<App> apps = new List<App>();             
+            foreach (string desktop_file in desktop_file_list) {
+                App app = new App(desktop_file, icon_manager);
                     
-                    if (app != null) {
-                        apps.insert_sorted(app, (a1, a2) => strcmp(a1.get_name().down(), a2.get_name().down() ));
-                    }
-                }
-            } else {
-                string info_str = "";
-                info_str += "Scanning for .desktop files in single thread mode!\n";
-                info_str += "Application does not seem to have support for multithreading!\n";
-                info_str += "Enabling support for multithreading would increase performance!\n";
-                print_info(info_str);
-                
-                foreach (string desktop_file in desktop_file_list) {
-                    AppCreationWorker worker = new AppCreationWorker(desktop_file, icon_manager);
-                    App app = worker.thread_func();
-                    
-                    if (app != null) {
-                        apps.insert_sorted(app, (a1, a2) => strcmp(a1.get_name().down(), a2.get_name().down() ));
-                    }
+                if (app.is_valid()) {
+                    apps.insert_sorted(app, (a1, a2) => strcmp(a1.get_name().down(), a2.get_name().down() ));
                 }
             }
             
@@ -300,26 +261,6 @@ namespace RocketLauncher {
             // Set value and send signal
             this.apps_selected = filtered_ar;
             selection_changed();
-        }
-    }
-    
-    private class AppCreationWorker : GLib.Object {
-        private string data;
-        private IconManager icon_manager;
-        
-        public AppCreationWorker(string data, IconManager icon_manager) {
-            this.data = data;
-            this.icon_manager = icon_manager;
-        }
-        
-        public App? thread_func() {
-            App new_app = new App(data, icon_manager);
-            
-            if (new_app.is_valid()) {
-                return new_app;
-            }
-            
-            return null;
         }
     }
 }
