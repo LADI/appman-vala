@@ -88,23 +88,26 @@ static gboolean on_icon_key_press_callback (GtkWidget *widget, GdkEvent *event, 
 
 static gboolean on_search_entry_key_release_callback (GtkSearchEntry *searchentry, GdkEvent *event, gpointer data)
 {
-	int i, row;
-	int columns = screen_width/(SPACE+ICON_SIZE) - 2;
-	/* I'm not using TRIE or binary search because in general there is a small number of installed application,
-	 * so the efficiency is good enought also with this simple code.
-	 */
-	const gchar *query = gtk_entry_get_text((GtkEntry*)searchentry);
-	RocketLauncherApp *app;
-	for (i = 0; i < apps_count; i++) {
-		row = i / columns;
-		GtkWidget *child = gtk_grid_get_child_at((GtkGrid*)data, i - (row * columns), row);
-		gchar *name = rocket_launcher_app_get_name (apps[i]);
-		if (!(g_str_has_prefix ( g_utf8_strdown ( name, strlen(name) ), g_utf8_strdown (query, strlen(query))))) {
-			gtk_widget_hide (child);
-		} else {
-			gtk_widget_show (child);
-			if (strlen(name) == strlen(query))
-				gtk_widget_grab_focus (child);
+	gint keyval = ((GdkEventKey*)event)->keyval;
+	if (((keyval >= GDK_KEY_A) && (keyval <= GDK_KEY_Z)) || ((keyval >= GDK_KEY_0) && (keyval <= GDK_KEY_9)) || ((keyval >= GDK_KEY_a) && (keyval <= GDK_KEY_z)) || (keyval == GDK_KEY_BackSpace) || (keyval == GDK_KEY_Cancel)) {
+		gint i, row;
+		gint columns = screen_width/(SPACE+ICON_SIZE) - 2;
+		/* I'm not using TRIE or binary search because in general there is a small number of installed application,
+		 * so the efficiency is good enought also with this simple code.
+		 */
+		const gchar *query = gtk_entry_get_text((GtkEntry*)searchentry);
+		RocketLauncherApp *app;
+		for (i = 0; i < apps_count; i++) {
+			row = i / columns;
+			GtkWidget *child = gtk_grid_get_child_at((GtkGrid*)data, i - (row * columns), row);
+			gchar *name = rocket_launcher_app_get_name (apps[i]);
+			if (!(g_str_has_prefix ( g_utf8_strdown ( name, strlen(name) ), g_utf8_strdown (query, strlen(query))))) {
+				gtk_widget_hide (child);
+			} else {
+				gtk_widget_show (child);
+				if (strlen(name) == strlen(query))
+					gtk_widget_grab_focus (child);
+			}
 		}
 	}
 	return FALSE;
