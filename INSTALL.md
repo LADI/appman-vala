@@ -37,41 +37,15 @@ Vala compiler:
 
 
 
-Building (easy)
+Building
 ---------------
 
 When you have all dependencies installed simply run the install.sh script,
 which will interactively ask you for your requirements, set the environment
 variables accordingly and run *make*.
 
-``$ sudo ./install.sh``  
+``$ make``  
 ``$ sudo make install``
-
-Building
---------
-
-The building process respects several environment parameters.  
-You can set *RCKTL_BUILD_DEBUG* to create a debug build or
-*RCKTL_BUILD_RELEASE* to create an performance optimized build.  
-
-If you use Ubuntu Unity (the default Ubuntu Desktop Environment, not something
-like *XFCE*/*KDE*/*LXDE*) you will need the *appindicator* library in order
-to display an icon in the message area.  
-You will also have to set the *RCKTL_FEATURE_APPINDICATOR* environment
-variable to use *appindicator*.  
-*RapidLauncher* also supports threaded builds. You can tell make to build
-with multiple threads with *-j* tag.
-(Or set it in *MAKEFLAGS* environment variable)  
-Make supports setting the *DESTDIR* environment variable to specify a
-(absolut) path that gets prepended to every installed file.
-
-Example:
-
-``$ export RCKTL_BUILD_DEBUG=``  
-``$ export RCKTL_BUILD_RELEASE=1``  
-``$ export RCKTL_FEATURE_APPINDICATOR=``  
-``$ make -j4``  
-``$ make install``  
 
 
 Usage
