@@ -846,7 +846,7 @@ namespace RocketLauncher {
             string? icon_str = null;
 
             // We first test if the given icon is an actual absolute path
-            if (original_name.@get(0) == '/') {
+            if (original_name.get(0) == '/') {
                 GLib.File icon_file = GLib.File.new_for_path(original_name);
                 if (icon_file.query_exists()) {
                     return original_name;
@@ -854,7 +854,7 @@ namespace RocketLauncher {
             }
 
 			//Some application have icon_name.png so we need to remove the extension
-			if (original_name.@get(original_name.length-4) == '.') {
+			if (original_name.get(original_name.length-4) == '.') {
             	name = original_name.substring(0,original_name.length-4);    
             } else
             	name = original_name;

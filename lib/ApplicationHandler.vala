@@ -59,21 +59,17 @@ namespace RocketLauncher {
                     } else {
                         dir = string.join("", dir, "applications");
                     }
-                    directories_l.append(dir);
+                    /* XDG_DATA_DIRS could contains duplicate, we must add a dir only one time */
+                    if (directories_l.find_custom(dir,strcmp) == null)
+                        directories_l.append(dir);
                 }
                 
                 //Append fallback values if they aren't already in list
                 foreach (string fallback_dir in directories_fallback) {
-                    bool contains = false;
-                    foreach (string dir in directories_l) {
-                        if (fallback_dir == dir) {
-                            contains = true;
-                            break;
-                        }
-                    }
-                    if (!contains) {
+                    if (directories_l.find_custom(fallback_dir, strcmp) == null)
                         directories_l.append(fallback_dir);
-                    }
+                    else
+                        continue;
                 }
                 
                 //Convert List to array
