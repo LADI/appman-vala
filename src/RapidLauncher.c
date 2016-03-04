@@ -3,6 +3,7 @@
 
 #define SPACE 40
 #define ICON_SIZE 80
+#define ICON_PADDING 10
 #define BUTTON_WIDTH 100
 #define BUTTON_HEIGHT 30
 
@@ -111,10 +112,10 @@ static gboolean on_search_entry_key_release_callback (GtkSearchEntry *searchentr
 
 void add_application(GtkGrid *grid, RocketLauncherApp *app, int i, int j) {
 	GtkWidget *event_box = gtk_event_box_new ();
-	GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	GtkWidget *image = gtk_image_new_from_file (rocket_launcher_app_get_icon_path (app));
 	resize_image(image, ICON_SIZE, ICON_SIZE);
-	gtk_box_pack_start (GTK_BOX (box), image, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (box), image, FALSE, FALSE, ICON_PADDING);
 	gchar *str = rocket_launcher_app_get_name (app);
 	resize_text(str, 15);
 	GtkWidget *label = gtk_label_new (NULL);
