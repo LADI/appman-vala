@@ -73,10 +73,7 @@ namespace RocketLauncher {
             }
         }
         
-        public void doo() { }
-        
         public bool is_valid() {
-            doo();
             return valid;
         }
         

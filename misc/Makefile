@@ -51,6 +51,7 @@ install:
 	install -D "$(ICON_NAME)_512x512.png" "$(DESTDIR)$(RCKTL_INSTALL_ICON_DIR)/512x512/apps/$(ICON_NAME).png"
 	
 	-update-icon-caches "$(RCKTL_INSTALL_ICON_DIR)"
+	-gtk-update-icon-cache "$(RCKTL_INSTALL_ICON_DIR)"
 
 uninstall:
 	rm -f "$(DESTDIR)$(RCKTL_INSTALL_BIN_DIR)/$(RUN_SCRIPT)"
@@ -63,7 +64,7 @@ uninstall:
 	rm -f "$(DESTDIR)$(RCKTL_INSTALL_ICON_DIR)/32x32/apps/$(ICON_NAME).png"
 	rm -f "$(DESTDIR)$(RCKTL_INSTALL_ICON_DIR)/36x36/apps/$(ICON_NAME).png"
 	rm -f "$(DESTDIR)$(RCKTL_INSTALL_ICON_DIR)/48x48/apps/$(ICON_NAME).png"
-	rm -f "$(ICON_NAME)_48x48.png" "/usr/share/pixmaps/$(ICON_NAME).png"
+	rm -f "/usr/share/pixmaps/$(ICON_NAME).png"
 	rm -f "$(DESTDIR)$(RCKTL_INSTALL_ICON_DIR)/64x64/apps/$(ICON_NAME).png"
 	rm -f "$(DESTDIR)$(RCKTL_INSTALL_ICON_DIR)/72x72/apps/$(ICON_NAME).png"
 	rm -f "$(DESTDIR)$(RCKTL_INSTALL_ICON_DIR)/96x96/apps/$(ICON_NAME).png"
