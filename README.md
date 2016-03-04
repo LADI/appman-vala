@@ -12,13 +12,23 @@ Rapid Launcher is born to give a good launcher also for old PCs. It's really sim
 
 ![Screenshot](screenshot.jpg "Screenshot")
 
+### Version
+
+0.3
+
 ### Dependencies
 
 Install gtk+ 3 devel to compile this software. For Fedora/RHEL/CentOS is `gtk3-devel` and for Ubuntu/Debian is `libgtk-3-dev`.
 
-### Version
+### Backend
 
-0.2
+The backend is a library (single-threaded) written in Vala from Rocket-Launcher. I made some changes to this library to make it better. You can use this library to manage the applications installed on your system and build new launchers.
+
+### TODO
+
+* Reduce memory usage
+* Align the matching applications of a search in the right way
+
 
 ### License
 
