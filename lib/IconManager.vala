@@ -844,11 +844,13 @@ namespace RocketLauncher {
         public string get_icon(string original_name, bool ignore_svg = false) {
         	string name;
             string? icon_str = null;
-            
+
             // We first test if the given icon is an actual absolute path
-            GLib.File icon_file = GLib.File.new_for_path(original_name);
-            if (icon_file.query_exists()) {
-                return original_name;
+            if (original_name.@get(0) == '/') {
+                GLib.File icon_file = GLib.File.new_for_path(original_name);
+                if (icon_file.query_exists()) {
+                    return original_name;
+                }
             }
 
 			//Some application have icon_name.png so we need to remove the extension
