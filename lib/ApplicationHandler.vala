@@ -68,8 +68,6 @@ namespace RocketLauncher {
                 foreach (string fallback_dir in directories_fallback) {
                     if (directories_l.find_custom(fallback_dir, strcmp) == null)
                         directories_l.append(fallback_dir);
-                    else
-                        continue;
                 }
                 
                 //Convert List to array
