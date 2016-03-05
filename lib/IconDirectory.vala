@@ -171,6 +171,17 @@ namespace RocketLauncher {
             
             return null;
         }
+        
+        /* Calculate icon size from path */
+        public int get_icon_size() {
+        	int size = 0;
+            int index = 2;
+            for (int j = 0; j < 4; j++) { index = directory.index_of_char('/', index) + 1; }
+            string psize = directory.substring(index, directory.index_of_char('/', index)-index);
+            index = psize.index_of_char('x');
+            if (index > 0) size = int.parse(psize.substring(0,index));
+            return size;
+        }
     }
     
     private enum IconDirectoryType {
