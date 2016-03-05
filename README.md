@@ -22,7 +22,7 @@ Install gtk+ 3 devel to compile this software. For Fedora/RHEL/CentOS is `gtk3-d
 
 ### Backend
 
-The backend is a library (single-threaded) written in Vala from Rocket-Launcher. I made some changes to this library to make it better. You can use this library to manage the applications installed on your system and build new launchers.
+The backend is a library (single-threaded) written in Vala from Rocket-Launcher. I made some changes to this library to make it better. You can use this library to manage the applications installed on your system and build new launchers. Look at the [strcture] (https://github.com/echo-devim/RapidLauncher/blob/master/STRUCTURE.md).
 
 ### TODO
 
