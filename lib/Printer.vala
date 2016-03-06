@@ -14,7 +14,7 @@
 **/
 
 
-namespace RocketLauncher {
+namespace Appman {
     public class Printer : GLib.Object {
         public static GLib.Object print_lock;
         

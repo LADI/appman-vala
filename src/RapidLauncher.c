@@ -1,5 +1,5 @@
 #include <gtk/gtk.h>
-#include "../build/rocketlauncher-0.1.h"
+#include "../build/appman.h"
 
 #define SPACE 40
 #define ICON_SIZE 80
@@ -9,7 +9,7 @@
 
 static gint screen_width;
 static gint screen_height;
-static RocketLauncherApp** apps = NULL;
+static AppmanApp** apps = NULL;
 static int apps_count = 0;
 
 void set_widget_color(GtkWidget *widget, float red, float green, float blue, float opacity) {
@@ -65,7 +65,7 @@ static gboolean on_icon_mouse_leave_callback (GtkWidget *widget, GdkEvent *event
 }
 
 static gboolean on_icon_button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer data) {
-	rocket_launcher_app_start((RocketLauncherApp*)data);
+	appman_app_start((AppmanApp*)data);
 	gtk_main_quit ();
 	return TRUE;
 }
@@ -80,7 +80,7 @@ static gboolean on_window_key_press_callback (GtkSearchEntry *searchentry, GdkEv
 static gboolean on_icon_key_press_callback (GtkWidget *widget, GdkEvent *event, gpointer data)
 {
 	if (((GdkEventKey*)event)->keyval == GDK_KEY_Return) {
-		rocket_launcher_app_start((RocketLauncherApp*)data);
+		appman_app_start((AppmanApp*)data);
 		gtk_main_quit ();
 	}
 	return FALSE;
@@ -96,11 +96,11 @@ static gboolean on_search_entry_key_release_callback (GtkSearchEntry *searchentr
 		 * so the efficiency is good enought also with this simple code.
 		 */
 		const gchar *query = gtk_entry_get_text((GtkEntry*)searchentry);
-		RocketLauncherApp *app;
+		AppmanApp *app;
 		for (i = 0; i < apps_count; i++) {
 			row = i / columns;
 			GtkWidget *child = gtk_grid_get_child_at((GtkGrid*)data, i - (row * columns), row);
-			gchar *name = rocket_launcher_app_get_name (apps[i]);
+			gchar *name = appman_app_get_name (apps[i]);
 			if (!(g_str_has_prefix ( g_utf8_strdown ( name, strlen(name) ), g_utf8_strdown (query, strlen(query))))) {
 				gtk_widget_hide (child);
 			} else {
@@ -113,13 +113,13 @@ static gboolean on_search_entry_key_release_callback (GtkSearchEntry *searchentr
 	return FALSE;
 }
 
-void add_application(GtkGrid *grid, RocketLauncherApp *app, int i, int j) {
+void add_application(GtkGrid *grid, AppmanApp *app, int i, int j) {
 	GtkWidget *event_box = gtk_event_box_new ();
 	GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	GtkWidget *image = gtk_image_new_from_file (rocket_launcher_app_get_icon_path (app));
+	GtkWidget *image = gtk_image_new_from_file (appman_app_get_icon_path (app));
 	resize_image(image, ICON_SIZE, ICON_SIZE);
 	gtk_box_pack_start (GTK_BOX (box), image, FALSE, FALSE, ICON_PADDING);
-	gchar *str = rocket_launcher_app_get_name (app);
+	gchar *str = appman_app_get_name (app);
 	resize_text(str, 15);
 	GtkWidget *label = gtk_label_new (NULL);
 	gtk_label_set_markup (GTK_LABEL (label), g_strconcat("<span color='#FFFFFF'>",str,"</span>", NULL));
@@ -138,8 +138,8 @@ void add_application(GtkGrid *grid, RocketLauncherApp *app, int i, int j) {
 
 void add_applications(GtkGrid *grid) {
 	int columns = screen_width/(SPACE+ICON_SIZE) - 2;
-	RocketLauncherApplicationHandler *apphandl = rocket_launcher_application_handler_new ();
-	apps = rocket_launcher_application_handler_get_apps (apphandl, &apps_count);
+	AppmanApplicationHandler *apphandl = appman_application_handler_new ();
+	apps = appman_application_handler_get_apps (apphandl, &apps_count);
 	int j = 0;
 	int t = apps_count/columns;
 	int i = 0;

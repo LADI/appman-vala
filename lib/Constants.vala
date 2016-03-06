@@ -14,7 +14,7 @@
 **/
 
 
-namespace RocketLauncher {
+namespace Appman {
     namespace Constants {
         public static const string[] category_button_values = { "",
                                                   "AudioVideo",

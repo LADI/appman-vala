@@ -14,7 +14,7 @@
 **/
 
 
-namespace RocketLauncher {
+namespace Appman {
     public class App : GLib.Object {
         private string app_name;
         private string? app_generic_name = null;

@@ -1,7 +1,6 @@
-LIB_VERSION				:=		0.1
-SHARED_LIBRARY			:=		librocketlauncher.so
-VAPI_FILE				:=		rocketlauncher-$(LIB_VERSION).vapi
-HEADER_FILE				:=		rocketlauncher-$(LIB_VERSION).h
+SHARED_LIBRARY			:=		libappman.so
+VAPI_FILE				:=		appman.vapi
+HEADER_FILE				:=		appman.h
 
 PACKAGES				:=		gobject-2.0
 PACKAGES				+=		glib-2.0

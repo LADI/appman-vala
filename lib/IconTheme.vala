@@ -14,7 +14,7 @@
 **/
 
 
-namespace RocketLauncher {
+namespace Appman {
     private class IconTheme : GLib.Object {
         /**
          * This is the absolute path to the theme directory, NOT to the

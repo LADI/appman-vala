@@ -14,7 +14,7 @@
 **/
 
 
-namespace RocketLauncher {
+namespace Appman {
     public class ApplicationHandler : GLib.Object {
         private string[] directories;
         private string[] directories_fallback = {

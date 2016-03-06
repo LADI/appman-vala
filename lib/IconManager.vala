@@ -14,7 +14,7 @@
 **/
 
 
-namespace RocketLauncher {
+namespace Appman {
     public class IconManager : GLib.Object {
         /**
          * Don't access this directly !

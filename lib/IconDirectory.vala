@@ -14,7 +14,7 @@
 **/
 
 
-namespace RocketLauncher {
+namespace Appman {
     private class IconDirectory : GLib.Object {
         private int size;
         private IconDirectoryType type;
