@@ -2,7 +2,7 @@ Appman
 ===============
 
 Appman is a library (single-threaded) written in Vala to manage the applications installed on a Linux system. Infact, its name means Application Manager (Appman).
-You could use this library to write your application launchers.
+You could use this library to write your application launchers. An example is [RapidLauncher](https://github.com/echo-devim/RapidLauncher).
 The library comes from Rocket-Launcher but I made some changes to make it better. Look at the [structure] (https://github.com/echo-devim/RapidLauncher/blob/master/STRUCTURE.md).
 
 ### Version
