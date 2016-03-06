@@ -1,56 +1,98 @@
+SHARED_LIBRARY			:=		libappman.so
+VAPI_FILE				:=		appman.vapi
+HEADER_FILE				:=		appman.h
+
+RCKTL_INSTALL_LIB_DIR	:=		/usr/lib/rapidlauncher
 BUILD_DIR				:=		build
+DIR_SOURCES				:=		src
 
-BINARY_DIR				:=		src/
-LIB_DIR					:=		lib/
-MISC_DIR				:=		misc
+PACKAGES				:=		gobject-2.0
+PACKAGES				+=		glib-2.0
+PACKAGES				+=		gio-2.0
+PACKAGES				+=		x11
+PACKAGES				+=		gtk+-3.0
+
+GEN_FLAGS				:=		$(addprefix --pkg ,$(PACKAGES))
+GEN_FLAGS				+=		--target-glib=2.32
+GEN_FLAGS				+=		--ccode
+GEN_FLAGS				+=		--header="$(BUILD_DIR)/$(HEADER_FILE)"
+GEN_FLAGS				+=		--vapi="$(BUILD_DIR)/$(VAPI_FILE)"
+
+CC_FLAGS				:=		-w
+CC_FLAGS				+=		-fPIC
+CC_FLAGS				+=		-shared
+CC_FLAGS				+=		$(shell pkg-config --cflags $(PACKAGES))
+
+LD_FLAGS				:=		-fPIC
+LD_FLAGS				+=		-shared
+LD_FLAGS				+=		$(shell pkg-config --libs $(PACKAGES))
+
+SOURCES					:=		$(wildcard $(DIR_SOURCES)/*.vala)
+
+OBJECTS					:=		${SOURCES:.vala=.o}
+VAPIFILES				:=		${SOURCES:.vala=.vapi}
 
 
-export RCKTL_INSTALL_LIB_DIR=/usr/lib/rapidlauncher
-export RCKTL_INSTALL_BIN_DIR=/usr/bin
-export RCKTL_INSTALL_ICON_DIR=/usr/share/icons/hicolor
-export RCKTL_INSTALL_DESKTOPFILE_DIR=/usr/share/applications
+ifndef BUILD_DIR
+	$(error variable BUILD_DIR is not set)
+endif
 
-export RCKTL_DIR=../$(BUILD_DIR)
+ifndef RCKTL_INSTALL_LIB_DIR
+	$(error variable RCKTL_INSTALL_LIB_DIR is not set)
+endif
 
-export RCKTL_BUILD_DEBUG
-export RCKTL_BUILD_RELEASE
-export RCKTL_FEATURE_APPINDICATOR
+ifdef RCKTL_BUILD_DEBUG
+	GEN_FLAGS				+=		--debug
+	CC_FLAGS				+=		--debug
+endif
 
+ifdef RCKTL_BUILD_RELEASE
+	CC_FLAGS				+=		-O3
+endif
+
+
+.SECONDARY:
+	@#
 
 .PHONY: all clean install uninstall
 	@#
 
 
-all: .LIBRARY .BINARY .MISC
+all: $(SOURCES) $(CFILES) $(BUILD_DIR)/$(SHARED_LIBRARY) $(BUILD_DIR)/$(VAPI_FILE) $(BUILD_DIR)/$(HEADER_FILE)
 	@#
 
 clean:
-	@$(MAKE) clean -C "$(BINARY_DIR)"
-	@$(MAKE) clean -C "$(LIB_DIR)"
-	@$(MAKE) clean -C "$(MISC_DIR)"
+	rm -f ${SOURCES:.vala=.c}
+	rm -f ${SOURCES:.vala=.h}
+	rm -f ${SOURCES:.vala=.o}
+	rm -f ${SOURCES:.vala=.vapi}
+	rm -f "$(BUILD_DIR)/$(VAPI_FILE)"
+	rm -f "$(BUILD_DIR)/$(HEADER_FILE)"
+	rm -f "$(BUILD_DIR)/$(SHARED_LIBRARY)"
 
 install:
-	@$(MAKE) install -C "$(BINARY_DIR)"
-	@$(MAKE) install -C "$(LIB_DIR)"
-	@$(MAKE) install -C "$(MISC_DIR)"
+	install -D "$(BUILD_DIR)/$(SHARED_LIBRARY)" "$(DESTDIR)$(RCKTL_INSTALL_LIB_DIR)/$(SHARED_LIBRARY)"
 
 uninstall:
-	@$(MAKE) uninstall -C "$(BINARY_DIR)"
-	@$(MAKE) uninstall -C "$(LIB_DIR)"
-	@$(MAKE) uninstall -C "$(MISC_DIR)"
-	
-	-rmdir "$(DESTDIR)$(RCKTL_INSTALL_LIB_DIR)"
+	rm -f "$(DESTDIR)$(RCKTL_INSTALL_LIB_DIR)/$(SHARED_LIBRARY)"
 
 
-$(BUILD_DIR):
-	mkdir --parents "$(BUILD_DIR)"
+%.vapi: %.vala
+	@echo "  GEN     $(notdir $@)"
+	@valac --fast-vapi="$@" $<
 
-.BINARY: $(BUILD_DIR) .LIBRARY
-	@$(MAKE) -C "$(BINARY_DIR)"
+MISSINGVAPIFILES=$(subst $(subst .c,.vapi,$@),,$(VAPIFILES))
+$(BUILD_DIR)/$(HEADER_FILE):
+$(BUILD_DIR)/$(VAPI_FILE):
+%.c: $(MISSINGVAPIFILES) %.vala
+	@echo "  GEN     $(notdir $@)"
+	@valac $(GEN_FLAGS) $(addprefix --use-fast-vapi=,$(MISSINGVAPIFILES)) "$(subst .c,.vala,$@)"
 
-.LIBRARY: $(BUILD_DIR)
-	@$(MAKE) -C "$(LIB_DIR)"
+%.o: %.c
+	@echo "  CC      $(notdir $@)"
+	@$(CC) $(CC_FLAGS) -c $< -o $@
 
-.MISC: $(BUILD_DIR)
-	@$(MAKE) -C "$(MISC_DIR)"
+$(BUILD_DIR)/$(SHARED_LIBRARY): $(OBJECTS)
+	@echo "  LD      $(notdir $@)"
+	@$(CC) $(OBJECTS) $(LD_FLAGS) -o "$(BUILD_DIR)/$(SHARED_LIBRARY)"
 

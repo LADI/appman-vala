@@ -1,16 +1,9 @@
-Rapid Launcher
+Appman
 ===============
 
-Rapid Launcher is an application launcher that is supposed to be fast and
-relatively lightweight.
-
-The backend is written in Vala and the frontend is written with C/GTK+ 3.
-
-Rapid Launcher is born to give a good launcher also for old PCs. It's really simple and is inspired by the Android and OSX launchers.
-
-
-
-![Screenshot](screenshot.jpg "Screenshot")
+Appman is a library (single-threaded) written in Vala to manage the applications installed on a Linux system. Infact, its name means Application Manager (Appman).
+You could use this library to write your application launchers.
+The library comes from Rocket-Launcher but I made some changes to make it better. Look at the [strcture] (https://github.com/echo-devim/RapidLauncher/blob/master/STRUCTURE.md).
 
 ### Version
 
@@ -18,16 +11,15 @@ Rapid Launcher is born to give a good launcher also for old PCs. It's really sim
 
 ### Dependencies
 
-Install gtk+ 3 devel to compile this software. For Fedora/RHEL/CentOS is `gtk3-devel` and for Ubuntu/Debian is `libgtk-3-dev`.
+Install *valac* (at least version 0.16) from your repository. You need also *glib-2.0*.
 
-### Backend
+### Installation
 
-The backend is a library (single-threaded) written in Vala from Rocket-Launcher. I made some changes to this library to make it better. You can use this library to manage the applications installed on your system and build new launchers. Look at the [strcture] (https://github.com/echo-devim/RapidLauncher/blob/master/STRUCTURE.md).
+Just run `make` and then `sudo make install` to install it.
 
 ### TODO
 
 * Reduce memory usage
-* Align the matching applications of a search in the right way
 
 
 ### License
