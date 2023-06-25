@@ -22,6 +22,7 @@ CC_FLAGS				:=		-w
 CC_FLAGS				+=		-fPIC
 CC_FLAGS				+=		-shared
 CC_FLAGS				+=		$(shell pkg-config --cflags $(PACKAGES))
+CC_FLAGS				+=		-I$(BUILD_DIR)
 
 LD_FLAGS				:=		-fPIC
 LD_FLAGS				+=		-shared
